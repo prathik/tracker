@@ -8,8 +8,8 @@ func (s *SessionService) Create(item *Item) {
 	s.repo.Create(item)
 }
 
-func (s *SessionService) GetWeekData() *WeekData {
-	return s.repo.GetWeekData()
+func (s *SessionService) QueryData(daysBack int) *DayDataCollection {
+	return s.repo.QueryData(daysBack)
 }
 
 func (s *SessionService) Pop() {

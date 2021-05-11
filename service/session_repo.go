@@ -2,7 +2,9 @@ package service
 
 type SessionRepo interface {
 	Create(item *Item)
-	GetWeekData() *WeekData
+
+	// QueryData pulls the data items from daysBack number of days to current date inclusive.
+	QueryData(daysBack int) *DayDataCollection
 	// Pop the last item added
 	Pop()
 }
