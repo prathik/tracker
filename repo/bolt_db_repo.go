@@ -74,6 +74,21 @@ func (b *boltDbRepo) Create(item *service.Item) {
 	}
 }
 
+func (b *boltDbRepo) Pop() {
+	err := b.db.Update(func(tx *bolt.Tx) error {
+		w, err := tx.CreateBucketIfNotExists([]byte("work"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		key, _ := w.Cursor().Last()
+		return w.Delete(key)
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (b *boltDbRepo) Close() {
 	_ = b.db.Close()
 }
