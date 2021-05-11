@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/boltdb/bolt v1.3.1
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/lunixbochs/vtclean v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect

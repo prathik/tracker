@@ -6,6 +6,7 @@ import (
 	"github.com/prathik/tracker/service"
 	"github.com/vmihailenco/msgpack/v5"
 	"log"
+	"sort"
 	"time"
 )
 
@@ -46,6 +47,10 @@ func (b *boltDbRepo) GetWeekData() *service.WeekData {
 	for _, v := range dayCount {
 		dayData = append(dayData, v)
 	}
+
+	sort.Slice(dayData, func(i, j int) bool {
+		return dayData[i].Time.Before(dayData[j].Time)
+	})
 
 	return &service.WeekData{WeekData: dayData}
 }
