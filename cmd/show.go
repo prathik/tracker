@@ -16,19 +16,14 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
-	"fmt"
-	"github.com/manifoldco/promptui"
 	"github.com/prathik/tracker/repo"
 	"github.com/prathik/tracker/service"
 	"github.com/spf13/cobra"
-	"strconv"
-	"time"
 )
 
-// incrementCmd represents the increment command
-var incrementCmd = &cobra.Command{
-	Use:   "increment",
+// showCmd represents the show command
+var showCmd = &cobra.Command{
+	Use:   "show",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -42,68 +37,20 @@ to quickly create a Cobra application.`,
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
 
-		workPrompt := promptui.Prompt{
-			Label: "Work",
-			Validate: func(s string) error {
-				if len(s) < 7 {
-					return errors.New("enter a value")
-				}
-
-				return nil
-			},
-		}
-		workResult, _ := workPrompt.Run()
-
-		joy := loadInteger("Joy [0-10]")
-
-		imp := loadInteger("Importance [0-10]")
-
-		notesPrompt := promptui.Prompt{
-			Label:   "Notes",
-			Default: "",
-		}
-		notesResult, _ := notesPrompt.Run()
-
-		ss.Create(&service.Item{Work: workResult, Joy: joy, Importance: imp, Notes: notesResult, Time: time.Now()})
-
-		fmt.Printf("\n")
-
-		PrintWeekData(ss)
+		PrintByDay(ss)
 	},
 }
 
-func loadInteger(label string) int {
-	intPrompt := promptui.Prompt{
-		Label:    label,
-		Validate: validateNumber,
-	}
-	result, _ := intPrompt.Run()
-	intVal, _ := strconv.Atoi(result)
-	return intVal
-}
-
-func validateNumber(input string) error {
-	ip, err := strconv.Atoi(input)
-	if err != nil {
-		return errors.New("invalid number")
-	}
-
-	if ip > 10 || ip < 0 {
-		return errors.New("enter between 0 to 10")
-	}
-	return nil
-}
-
 func init() {
-	rootCmd.AddCommand(incrementCmd)
+	rootCmd.AddCommand(showCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// incrementCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// showCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// incrementCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// showCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

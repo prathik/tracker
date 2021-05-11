@@ -78,8 +78,8 @@ func GetSlotFromTime(currentTime time.Time) []byte {
 	return timeSlot
 }
 
-func NewBoltDbRepo() *boltDbRepo {
-	db, err := bolt.Open("work.db", 0600, nil)
+func NewBoltDbRepo(dbFilePath string) *boltDbRepo {
+	db, err := bolt.Open(dbFilePath, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
