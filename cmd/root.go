@@ -56,6 +56,14 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tracker.yaml)")
 
+	home, err := homedir.Dir()
+
+	if err != nil {
+		panic(err)
+	}
+
+	rootCmd.PersistentFlags().String("db", home + "/work.db", "pass the path to file where data is stored")
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
