@@ -2,9 +2,9 @@ package service
 
 import "time"
 
-// WeekData represents the work done in the week.
-type WeekData struct {
-	WeekData []*DayData
+// DayDataCollection represents the work done in the week.
+type DayDataCollection struct {
+	DayDataCollection []*DayData
 }
 
 // DayData is a collection of work done in a day.

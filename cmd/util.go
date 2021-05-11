@@ -14,7 +14,7 @@ func PrintWeekData(ss *service.SessionService) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Day", "Count"})
 
-	for _, d := range ss.GetWeekData().WeekData {
+	for _, d := range ss.QueryData(7).DayDataCollection {
 		table.Append([]string{d.Time.Format("2006-01-02"), strconv.Itoa(d.Count)})
 	}
 	table.Render()
@@ -22,7 +22,7 @@ func PrintWeekData(ss *service.SessionService) {
 
 // PrintByDay prints the data per day with items of each day in a table
 func PrintByDay(ss *service.SessionService) {
-	for _, d := range ss.GetWeekData().WeekData {
+	for _, d := range ss.QueryData(7).DayDataCollection {
 		color.Green("%s", d.Time.Format("2006-01-02"))
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Work", "Joy", "Importance", "Notes"})

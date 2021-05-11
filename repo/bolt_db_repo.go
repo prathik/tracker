@@ -16,13 +16,12 @@ type boltDbRepo struct {
 	db *bolt.DB
 }
 
-
-func (b *boltDbRepo) GetWeekData() *service.WeekData {
+func (b *boltDbRepo) QueryData(daysBack int) *service.DayDataCollection {
 	dayCount := map[string]*service.DayData{}
 	_ = b.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte("work")).Cursor()
 		now := time.Now()
-		min := []byte(now.AddDate(0, 0, -7).Format(timeFormat))
+		min := []byte(now.AddDate(0, 0, -daysBack).Format(timeFormat))
 		max := []byte(now.Format(timeFormat))
 
 		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
@@ -52,7 +51,7 @@ func (b *boltDbRepo) GetWeekData() *service.WeekData {
 		return dayData[i].Time.Before(dayData[j].Time)
 	})
 
-	return &service.WeekData{WeekData: dayData}
+	return &service.DayDataCollection{DayDataCollection: dayData}
 }
 
 func (b *boltDbRepo) Create(item *service.Item) {
