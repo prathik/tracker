@@ -13,10 +13,17 @@ func PrintWeekData(ss *service.SessionService) {
 	// Print entire week as a table for a reminder
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Day", "Count"})
-
-	for _, d := range ss.QueryData(7).DayDataCollection {
+	prevCount := 0.0
+	prevTotal := 0.0
+	for i, d := range ss.QueryData(7).DayDataCollection {
+		if i != len(ss.QueryData(7).DayDataCollection) {
+			prevCount = prevCount + 1
+			prevTotal = prevTotal + float64(d.Count)
+		}
 		table.Append([]string{d.Time.Format("2006-01-02"), strconv.Itoa(d.Count)})
 	}
+	prevDaysAverage := prevTotal / prevCount
+	color.Green("Count to meet or exceed today = %.1f", prevDaysAverage)
 	table.Render()
 }
 
