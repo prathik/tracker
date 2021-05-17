@@ -16,7 +16,7 @@ func PrintWeekData(ss *service.SessionService) {
 	prevCount := 0.0
 	prevTotal := 0.0
 	for i, d := range ss.QueryData(7).DayDataCollection {
-		if i != len(ss.QueryData(7).DayDataCollection) {
+		if i != (len(ss.QueryData(7).DayDataCollection) - 1) {
 			prevCount = prevCount + 1
 			prevTotal = prevTotal + float64(d.Count)
 		}
