@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2021-05-17
+### Fixed
+- Bug in show stats command
+
 ## [0.0.3] - 2021-05-13
 ### Added
 - Pop command to remove the last added entry
@@ -24,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support to add work
 - Display previous week's data on adding work
 
-[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.3...HEAD
+[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.4...HEAD
+[0.0.4]: https://github.com/prathik/tracker/releases/tag/v0.0.4
 [0.0.3]: https://github.com/prathik/tracker/releases/tag/v0.0.3
 [0.0.2]: https://github.com/prathik/tracker/releases/tag/v0.0.2
 [0.0.1]: https://github.com/prathik/tracker/releases/tag/v0.0.1
