@@ -7,6 +7,8 @@ Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes e
 1. Track total pomodoro donerun should be visible
 2. Have a quick and easy way to track the same
 3. The Pomodoro sessions trend should be visible
+** Non Goals
+1. Tracking non pomodoro work
 ** Plan
 Create a single person web server that takes in when work was completed.
 
