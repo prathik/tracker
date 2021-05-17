@@ -6,6 +6,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/fatih/color v1.11.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/guptarohit/asciigraph v0.5.2
 	github.com/lunixbochs/vtclean v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/manifoldco/promptui v0.8.0
