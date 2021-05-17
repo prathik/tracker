@@ -21,7 +21,10 @@ func (b *boltDbRepo) QueryData(daysBack int) *service.DayDataCollection {
 	_ = b.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte("work")).Cursor()
 		now := time.Now()
-		min := []byte(now.AddDate(0, 0, -daysBack).Format(timeFormat))
+		nowStartOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		minDate := nowStartOfDay.AddDate(0, 0, -daysBack).Format(timeFormat)
+
+		min := []byte(minDate)
 		max := []byte(now.Format(timeFormat))
 
 		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
