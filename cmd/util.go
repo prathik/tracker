@@ -6,6 +6,7 @@ import (
 	"github.com/prathik/tracker/service"
 	"os"
 	"strconv"
+	"time"
 )
 
 // PrintWeekData prints the data of the entire week in a tabular format
@@ -16,12 +17,14 @@ func PrintWeekData(ss *service.SessionService) {
 	prevCount := 0.0
 	prevTotal := 0.0
 	queryData := ss.QueryData(7)
-	for i, d := range queryData.DayDataCollection {
-		if i != (len(queryData.DayDataCollection) - 1) {
+	today := time.Now().Format("2006-01-02")
+	for _, d := range queryData.DayDataCollection {
+		day := d.Time.Format("2006-01-02")
+		if today != day {
 			prevCount = prevCount + 1
 			prevTotal = prevTotal + float64(d.Count)
 		}
-		table.Append([]string{d.Time.Format("2006-01-02"), strconv.Itoa(d.Count)})
+		table.Append([]string{day, strconv.Itoa(d.Count)})
 	}
 	prevDaysAverage := prevTotal / prevCount
 	color.Green("Count to meet or exceed today = %.1f", prevDaysAverage)
