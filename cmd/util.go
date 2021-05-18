@@ -26,8 +26,8 @@ func PrintWeekData(ss *service.SessionService) {
 		}
 		table.Append([]string{day, strconv.Itoa(d.Count)})
 	}
-	prevDaysAverage := prevTotal / prevCount
-	color.Green("Count to meet or exceed today = %.1f", prevDaysAverage)
+	prevDaysAverage := int(prevTotal / prevCount)
+	color.Green("Count to meet or exceed today = %d", prevDaysAverage)
 	table.Render()
 }
 
