@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2021-05-25
+### Changed
+- Display of work done table
+
 ## [0.0.5] - 2021-05-21
 ### Fixed
 - Count of sessions to be done rounded down to nearest integer
@@ -36,7 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support to add work
 - Display previous week's data on adding work
 
-[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/prathik/tracker/releases/tag/v0.0.6
 [0.0.5]: https://github.com/prathik/tracker/releases/tag/v0.0.5
 [0.0.4]: https://github.com/prathik/tracker/releases/tag/v0.0.4
 [0.0.3]: https://github.com/prathik/tracker/releases/tag/v0.0.3
