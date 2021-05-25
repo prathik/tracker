@@ -14,3 +14,11 @@ Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes e
 #+begin_src sh :results verbatim :exports both
 tracker increment
 #+end_src
+*** Show previous session data
+#+begin_src sh :results verbatim :exports both
+tracker show
+#+end_src
+*** Show a graph of joy and importance of activities
+#+begin_src sh :results verbatim :exports both
+tracker show graph
+#+end_src
