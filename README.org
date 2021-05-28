@@ -9,6 +9,12 @@ Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes e
 3. The Pomodoro sessions trend should be visible
 ** Non Goals
 1. Tracking non pomodoro work
+** Installation
+
+#+begin_src sh :results verbatim :exports both
+go get -u github.com/prathik/tracker
+#+end_src
+
 ** Usage
 *** Increment data for current session
 #+begin_src sh :results verbatim :exports both
