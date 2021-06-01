@@ -1,4 +1,4 @@
-* Pomodoro Tracker
+* Tracker
 ** Summary
 Track the number of pomodoro sessions done
 ** Background
@@ -27,4 +27,21 @@ tracker show
 *** Show a graph of joy and importance of activities
 #+begin_src sh :results verbatim :exports both
 tracker show graph
+#+end_src
+
+#+begin_src
+Importance
+ 6.00 ┤   ╭─╮        ╭─╮     ╭╮
+ 5.00 ┼╮  │ │  ╭╮ ╭─╮│ │ ╭╮╭─╯│╭╮╭────╮
+ 4.00 ┤╰──╯ ╰╮╭╯│ │ ╰╯ │ │╰╯  ││╰╯    │
+ 3.00 ┤      ││ ╰╮│    ╰╮│    ╰╯      ╰
+ 2.00 ┤      ╰╯  ╰╯     ╰╯
+
+Joy
+ 9.00 ┤       ╭╮
+ 8.00 ┤       ││ ╭───╮    ╭─╮  ╭─╮
+ 7.00 ┤      ╭╯╰╮│   │ ╭╮╭╯ │  │ ╰╮   ╭
+ 6.00 ┤  ╭──╮│  ╰╯   ╰─╯╰╯  │╭─╯  ╰╮╭╮│
+ 5.00 ┤╭╮│  ││              ││     ╰╯╰╯
+ 4.00 ┼╯╰╯  ╰╯              ╰╯
 #+end_src
