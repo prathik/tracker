@@ -20,6 +20,25 @@ go get -u github.com/prathik/tracker
 #+begin_src sh :results verbatim :exports both
 tracker increment
 #+end_src
+
+**** Output
+#+begin_src
+Work: test test
+Joy [0-10]: 8
+Importance [0-10]: 8
+Notes: test
+
+Count to meet or exceed today = 7
++------------+-------+
+|    DAY     | COUNT |
++------------+-------+
+| 2021-05-25 |     6 |
+| 2021-05-27 |     8 |
+| 2021-05-28 |     7 |
+| 2021-05-31 |     8 |
+| 2021-06-01 |     5 |
++------------+-------+
+#+end_src
 *** Show previous session data
 #+begin_src sh :results verbatim :exports both
 tracker show
