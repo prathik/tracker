@@ -29,6 +29,8 @@ tracker show
 tracker show graph
 #+end_src
 
+**** Output
+
 #+begin_src
 Importance
  6.00 ┤   ╭─╮        ╭─╮     ╭╮
