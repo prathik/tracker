@@ -24,6 +24,12 @@ tracker increment
 #+begin_src sh :results verbatim :exports both
 tracker show
 #+end_src
+*** Show work done since n days back
+Takes the input in ISO 8601 duration format.
+
+#+begin_src sh :results verbatim :exports both
+tracker show --since "P14D"
+#+end_src
 *** Show a graph of joy and importance of activities
 #+begin_src sh :results verbatim :exports both
 tracker show graph
