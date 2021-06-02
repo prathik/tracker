@@ -1,5 +1,7 @@
 package service
 
+import "time"
+
 type SessionService struct {
 	repo SessionRepo
 }
@@ -8,7 +10,7 @@ func (s *SessionService) Create(item *Item) {
 	s.repo.Create(item)
 }
 
-func (s *SessionService) QueryData(daysBack int) *DayDataCollection {
+func (s *SessionService) QueryData(daysBack time.Duration) *DayDataCollection {
 	return s.repo.QueryData(daysBack)
 }
 

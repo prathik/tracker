@@ -16,7 +16,8 @@ func PrintWeekData(ss *service.SessionService) {
 	table.SetHeader([]string{"Day", "Count"})
 	prevCount := 0.0
 	prevTotal := 0.0
-	queryData := ss.QueryData(7)
+	duration, _ := time.ParseDuration("168h") // 7 days
+	queryData := ss.QueryData(duration)
 	today := time.Now().Format("2006-01-02")
 	for _, d := range queryData.DayDataCollection {
 		day := d.Time.Format("2006-01-02")
@@ -35,7 +36,8 @@ func PrintWeekData(ss *service.SessionService) {
 func PrintByDay(ss *service.SessionService) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Date", "Work", "Joy", "Importance", "Notes"})
-	for _, d := range ss.QueryData(7).DayDataCollection {
+	duration, _ := time.ParseDuration("168h") // 7 days
+	for _, d := range ss.QueryData(duration).DayDataCollection {
 		for _, wi := range d.WorkItem {
 			printData := []string{d.Time.Format("2006-01-02"), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})

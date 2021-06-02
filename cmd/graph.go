@@ -20,9 +20,10 @@ import (
 	"github.com/fatih/color"
 	"github.com/prathik/tracker/repo"
 	"github.com/prathik/tracker/service"
+	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/guptarohit/asciigraph"
+	"github.com/spf13/cobra"
 )
 
 // graphCmd represents the graph command
@@ -34,7 +35,8 @@ var graphCmd = &cobra.Command{
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
-		queryData := ss.QueryData(7)
+		duration, _ := time.ParseDuration("168h") // 7 days
+		queryData := ss.QueryData(duration)
 		var importance []float64
 		var joy []float64
 		for _, v := range queryData.DayDataCollection {

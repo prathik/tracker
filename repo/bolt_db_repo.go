@@ -16,13 +16,13 @@ type boltDbRepo struct {
 	db *bolt.DB
 }
 
-func (b *boltDbRepo) QueryData(daysBack int) *service.DayDataCollection {
+func (b *boltDbRepo) QueryData(duration time.Duration) *service.DayDataCollection {
 	dayCount := map[string]*service.DayData{}
 	_ = b.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte("work")).Cursor()
 		now := time.Now()
 		nowStartOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-		minDate := nowStartOfDay.AddDate(0, 0, -daysBack).Format(timeFormat)
+		minDate := nowStartOfDay.Add(-duration).Format(timeFormat)
 
 		min := []byte(minDate)
 		max := []byte(now.Format(timeFormat))
