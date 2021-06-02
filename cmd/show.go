@@ -19,32 +19,26 @@ import (
 	"github.com/prathik/tracker/repo"
 	"github.com/prathik/tracker/service"
 	"github.com/spf13/cobra"
+	"time"
 )
+
+var daysSince int
 
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show",
-	Short: "Shows the activities done in the past week",
+	Short: "Shows the activities done in the past (by default week)",
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
-
-		PrintByDay(ss)
+		PrintByDay(ss, time.Duration(daysSince*24) * time.Hour)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(showCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// showCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// showCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	showCmd.Flags().IntVarP(&daysSince, "since-days", "s", 7, "show since input days back")
 }

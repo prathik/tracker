@@ -33,11 +33,10 @@ func PrintWeekData(ss *service.SessionService) {
 }
 
 // PrintByDay prints the data per day with items of each day in a table
-func PrintByDay(ss *service.SessionService) {
+func PrintByDay(ss *service.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Date", "Work", "Joy", "Importance", "Notes"})
-	duration, _ := time.ParseDuration("168h") // 7 days
-	for _, d := range ss.QueryData(duration).DayDataCollection {
+	for _, d := range ss.QueryData(since).DayDataCollection {
 		for _, wi := range d.WorkItem {
 			printData := []string{d.Time.Format("2006-01-02"), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
