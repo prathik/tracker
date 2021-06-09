@@ -1,6 +1,6 @@
 * Tracker
 ** Summary
-Track the number of pomodoro sessions done
+Track your work along with impact and joy.
 ** Background
 Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes each. One of the key issues is a lack of fast way to track the number of pomodoro sessions that done.
 ** Goals
