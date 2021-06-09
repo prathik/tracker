@@ -3,12 +3,18 @@
 Tracker enables you to optimize your work by tracking tasks that you did and subjective feelings around it. This data can later be used to thinking about how to improve both impact and joy of your work.
 ** Background
 Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes each. One of the key issues is a lack of fast way to track the number of pomodoro sessions that done.
-** Goals
-1. Track total pomodoro done
-2. Have a quick and easy way to track the same
-3. The Pomodoro sessions trend should be visible
-** Non Goals
-1. Tracking non pomodoro work
+** How?
+*** Daily
+1. Set a time slot for work ie 25 minutes
+2. Start counter
+3. Work
+4. When counter ends run `tracker increment`
+5. Take a 5 minute (or whatever is comfortable) break
+6. goto step 1
+
+*** Weekly Retro
+Post a week of doing this, run `tracker show` to view work done last week and then think about how to optimize for importance (impact) and joy metrics.
+
 ** Installation
 
 #+begin_src sh :results verbatim :exports both
