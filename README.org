@@ -53,6 +53,25 @@ tracker show --since-days 14
 #+begin_src sh :results verbatim :exports both
 tracker show --with-time
 #+end_src
+
+#+begin_src
++---------------------------+--------+--------------------------------+-----+------------+-------------------------------+
+|           TIME            | DELTA  |              WORK              | JOY | IMPORTANCE |             NOTES             |
++---------------------------+--------+--------------------------------+-----+------------+-------------------------------+
+| 2021-06-09T05:00:38+05:30 | -5h32m | gtd clean up and library       | 8   | 5          |                               |
+|                           |        | upgrades                       |     |            |                               |
+| 2021-06-09T05:31:29+05:30 | -5h1m  | use viper version v1           | 9   | 5          | solved go mod issue           |
+| 2021-06-09T06:05:05+05:30 | -4h27m | looking into how renovate bot  | 7   | 6          |                               |
+|                           |        | is setup                       |     |            |                               |
+| 2021-06-09T06:38:00+05:30 | -3h54m | setup renovate runner and      | 8   | 6          | good learning about renovate  |
+|                           |        | supply runner                  |     |            |                               |
+| 2021-06-09T08:37:15+05:30 | -1h55m | figure out org archive in bulk | 8   | 3          | good productivity improvement |
+| 2021-06-09T09:28:08+05:30 | -1h4m  | create command for             | 8   | 4          | optimizes time                |
+|                           |        | org-archieve bulk              |     |            |                               |
+| 2021-06-09T10:16:09+05:30 | -16m   | add with-time command to       | 8   | 2          |                               |
+|                           |        | tracker                        |     |            |                               |
++---------------------------+--------+--------------------------------+-----+------------+-------------------------------+
+#+end_src
 *** Show a graph of joy and importance of activities
 #+begin_src sh :results verbatim :exports both
 tracker show graph

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/prathik/tracker/service"
@@ -49,15 +50,32 @@ func PrintByDay(ss *service.SessionService, since time.Duration) {
 
 func PrintWithTime(ss *service.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Time", "Work", "Joy", "Importance", "Notes"})
+	table.SetHeader([]string{"Time", "Delta", "Work", "Joy", "Importance", "Notes"})
+	now := time.Now()
 	for _, d := range ss.QueryData(since).DayDataCollection {
 		for _, wi := range d.WorkItem {
-			printData := []string{wi.Time.Format(time.RFC3339), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
-			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
+			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
+			table.Rich(printData, []tablewriter.Colors{{}, {}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
 		}
 
 	}
 	table.Render()
+}
+
+func fmtDuration(d time.Duration) string {
+	d = d.Round(time.Minute)
+	h := d / time.Hour
+	d -= h * time.Hour
+	m := d / time.Minute
+	return fmt.Sprintf("%dh%dm", h, m)
+}
+
+func formatDelta(now time.Time, doneOn time.Time) string {
+	deltaInMinutes := now.Sub(doneOn).Minutes()
+	if deltaInMinutes < 59 {
+		return fmt.Sprintf("-%.0fm", now.Sub(doneOn).Minutes())
+	}
+	return "-" + fmtDuration(now.Sub(doneOn))
 }
 
 func getColour(value int) tablewriter.Colors {
