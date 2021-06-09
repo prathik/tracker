@@ -15,6 +15,11 @@ Post a week of doing this, run `tracker show` to view work done last week and th
 
 ** Installation
 
+*** Install Go
+https://golang.org/doc/install
+
+*** Run
+
 #+begin_src sh :results verbatim :exports both
 go get -u github.com/prathik/tracker
 #+end_src
