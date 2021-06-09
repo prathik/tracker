@@ -1,8 +1,6 @@
 * Tracker
 ** Summary
 Tracker enables you to optimize your work by tracking tasks that you did and subjective feelings around it. This data can later be used to thinking about how to improve both impact and joy of your work.
-** Background
-Currently I operate via pomodoro, running a total of 12 sessions of 25 minutes each. One of the key issues is a lack of fast way to track the number of pomodoro sessions that done.
 ** How?
 *** Daily
 1. Set a time slot for work ie 25 minutes
