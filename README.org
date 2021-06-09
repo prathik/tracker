@@ -49,6 +49,10 @@ Takes the input number of days.
 #+begin_src sh :results verbatim :exports both
 tracker show --since-days 14
 #+end_src
+*** Show work done with when the entry was created
+#+begin_src sh :results verbatim :exports both
+tracker show --with-time
+#+end_src
 *** Show a graph of joy and importance of activities
 #+begin_src sh :results verbatim :exports both
 tracker show graph

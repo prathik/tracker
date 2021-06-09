@@ -33,7 +33,14 @@ var showCmd = &cobra.Command{
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
-		PrintByDay(ss, time.Duration(daysSince*24) * time.Hour)
+
+		includeTime, _ := cmd.Flags().GetBool("with-time")
+
+		if includeTime {
+			PrintWithTime(ss, time.Duration(daysSince*24)*time.Hour)
+		} else {
+			PrintByDay(ss, time.Duration(daysSince*24)*time.Hour)
+		}
 	},
 }
 
@@ -41,4 +48,5 @@ func init() {
 	rootCmd.AddCommand(showCmd)
 
 	showCmd.Flags().IntVarP(&daysSince, "since-days", "s", 7, "show since input days back")
+	showCmd.Flags().Bool("with-time", false, "prints with the time when the entry was added")
 }

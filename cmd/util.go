@@ -47,6 +47,19 @@ func PrintByDay(ss *service.SessionService, since time.Duration) {
 	table.Render()
 }
 
+func PrintWithTime(ss *service.SessionService, since time.Duration) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Time", "Work", "Joy", "Importance", "Notes"})
+	for _, d := range ss.QueryData(since).DayDataCollection {
+		for _, wi := range d.WorkItem {
+			printData := []string{wi.Time.Format(time.RFC3339), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
+			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
+		}
+
+	}
+	table.Render()
+}
+
 func getColour(value int) tablewriter.Colors {
 	if value > 6 {
 		return tablewriter.Colors{tablewriter.Bold, tablewriter.FgCyanColor}
