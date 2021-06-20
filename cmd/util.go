@@ -36,11 +36,11 @@ func PrintWeekData(ss *service.SessionService) {
 // PrintByDay prints the data per day with items of each day in a table
 func PrintByDay(ss *service.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Date", "Work", "Joy", "Importance", "Notes"})
+	table.SetHeader([]string{"Date", "Work", "Joy", "Impact", "Notes"})
 	for _, d := range ss.QueryData(since).DayDataCollection {
 		for _, wi := range d.WorkItem {
-			printData := []string{d.Time.Format("2006-01-02"), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
-			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
+			printData := []string{d.Time.Format("2006-01-02"), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Impact), wi.Notes}
+			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(wi.Joy), getColour(wi.Impact), {}})
 		}
 
 	}
@@ -50,12 +50,12 @@ func PrintByDay(ss *service.SessionService, since time.Duration) {
 
 func PrintWithTime(ss *service.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Time", "Delta", "Work", "Joy", "Importance", "Notes"})
+	table.SetHeader([]string{"Time", "Delta", "Work", "Joy", "Impact", "Notes"})
 	now := time.Now()
 	for _, d := range ss.QueryData(since).DayDataCollection {
 		for _, wi := range d.WorkItem {
-			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Importance), wi.Notes}
-			table.Rich(printData, []tablewriter.Colors{{}, {}, {}, getColour(wi.Joy), getColour(wi.Importance), {}})
+			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), wi.Work, strconv.Itoa(wi.Joy), strconv.Itoa(wi.Impact), wi.Notes}
+			table.Rich(printData, []tablewriter.Colors{{}, {}, {}, getColour(wi.Joy), getColour(wi.Impact), {}})
 		}
 
 	}

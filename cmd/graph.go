@@ -41,13 +41,13 @@ var graphCmd = &cobra.Command{
 		var joy []float64
 		for _, v := range queryData.DayDataCollection {
 			for _, d := range v.WorkItem {
-				importance = append(importance, float64(d.Importance))
+				importance = append(importance, float64(d.Impact))
 				joy = append(joy, float64(d.Joy))
 			}
 		}
 		impGraph := asciigraph.Plot(importance)
 
-		color.Green("Importance")
+		color.Green("Impact")
 		fmt.Println(impGraph)
 
 		joyGraph := asciigraph.Plot(joy)

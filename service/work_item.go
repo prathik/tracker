@@ -16,9 +16,9 @@ type DayData struct {
 
 // Item represents a single work item.
 type Item struct {
-	Time       time.Time // Time when the item was done
-	Work       string // Work that was done
-	Joy        int // Joy in the Work
-	Importance int // Importance of the Work
-	Notes      string // Any learnings from the Work is captured here
+	Time   time.Time // Time when the item was done
+	Work   string    // Work that was done
+	Joy    int       // Joy in the Work
+	Impact int       // Business Impact of the Work
+	Notes  string    // Any learnings from the Work is captured here
 }

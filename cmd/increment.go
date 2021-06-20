@@ -56,7 +56,7 @@ to quickly create a Cobra application.`,
 
 		joy := loadInteger("Joy [0-10]")
 
-		imp := loadInteger("Importance [0-10]")
+		imp := loadInteger("Impact [0-10]")
 
 		notesPrompt := promptui.Prompt{
 			Label:   "Notes",
@@ -64,7 +64,7 @@ to quickly create a Cobra application.`,
 		}
 		notesResult, _ := notesPrompt.Run()
 
-		ss.Create(&service.Item{Work: workResult, Joy: joy, Importance: imp, Notes: notesResult, Time: time.Now()})
+		ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: imp, Notes: notesResult, Time: time.Now()})
 
 		fmt.Printf("\n")
 
