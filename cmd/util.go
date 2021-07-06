@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/prathik/tracker/service"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -28,8 +30,12 @@ func PrintWeekData(ss *service.SessionService) {
 		}
 		table.Append([]string{day, strconv.Itoa(d.Count)})
 	}
-	prevDaysAverage := int(prevTotal / prevCount)
-	color.Green("Count to meet or exceed today = %d", prevDaysAverage)
+
+	if prevCount != 0 {
+		prevDaysAverage := int(prevTotal / prevCount)
+		color.Green("Count to meet or exceed today = %d", prevDaysAverage)
+	}
+	
 	table.Render()
 }
 
@@ -88,4 +94,22 @@ func getColour(value int) tablewriter.Colors {
 	}
 
 	return tablewriter.Colors{tablewriter.Normal, tablewriter.ALIGN_DEFAULT}
+}
+
+func HourAndMinuteFromString(str string) (hour int, minute int, err error) {
+	if str == "" {
+		err = errors.New("invalid input")
+		return 0, 0, err
+	}
+	startTimeSplit := strings.SplitN(str, ":", 2)
+	hour, err = strconv.Atoi(startTimeSplit[0])
+	if err != nil {
+		return 0, 0, err
+	}
+	minute, err = strconv.Atoi(startTimeSplit[1])
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return hour, minute, err
 }
