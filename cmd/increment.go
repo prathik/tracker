@@ -22,25 +22,38 @@ var incrementCmd = &cobra.Command{
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
 
-		workPrompt := promptui.Prompt{
-			Label: "Work",
-			Validate: func(s string) error {
-				if len(s) < 7 {
-					return errors.New("enter a value")
-				}
+		shortMode, _ := cmd.Flags().GetBool("short")
+		var (
+			workResult string
+			joy int
+			impact int
+			notesResult string
+		)
+		if !shortMode {
+			workPrompt := promptui.Prompt{
+				Label: "Work",
+				Validate: func(s string) error {
+					if len(s) < 7 {
+						return errors.New("enter a value")
+					}
 
-				return nil
-			},
+					return nil
+				},
+			}
+			workResult, _ = workPrompt.Run()
+			joy = loadInteger("Joy [0-10]")
+			impact = loadInteger("Impact [0-10]")
+			notesPrompt := promptui.Prompt{
+				Label:   "Notes",
+				Default: "",
+			}
+			notesResult, _ = notesPrompt.Run()
+		} else {
+			workResult = "short mode"
+			joy = 5
+			impact = 5
+			notesResult = "short mode"
 		}
-		workResult, _ := workPrompt.Run()
-		joy := loadInteger("Joy [0-10]")
-		imp := loadInteger("Impact [0-10]")
-		notesPrompt := promptui.Prompt{
-			Label:   "Notes",
-			Default: "",
-		}
-		notesResult, _ := notesPrompt.Run()
-
 		startTime, _ := cmd.Flags().GetString("start-time")
 		count, _ := cmd.Flags().GetInt("count")
 
@@ -50,7 +63,7 @@ var incrementCmd = &cobra.Command{
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: imp, Notes: notesResult, Time: time.Now()})
+			ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -58,7 +71,7 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: imp, Notes: notesResult, Time: sessionTime})
+				ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
 			}
 		}
 
@@ -110,4 +123,5 @@ func init() {
 	rootCmd.AddCommand(incrementCmd)
 	incrementCmd.Flags().String("start-time", "", "Start hour and minute, use hh:mm format")
 	incrementCmd.Flags().Int("count", 1, "Count of sessions done")
+	incrementCmd.Flags().Bool("short", false, "Short mode")
 }
