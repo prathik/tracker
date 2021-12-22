@@ -30,7 +30,7 @@ func (s *SessionService) Save(item *Session) error {
 	return nil
 }
 
-func (s *SessionService) QueryData(daysBack time.Duration) (Days, error) {
+func (s *SessionService) ReportForPreviousDays(daysBack time.Duration) (Days, error) {
 	sessions, err := s.repo.Query(daysBack)
 
 	if err != nil {
@@ -45,8 +45,8 @@ func (s *SessionService) QueryData(daysBack time.Duration) (Days, error) {
 	}
 
 	var days Days
-	for _, daySessions := range daySessionsMap {
-		days = append(days, &Day{Sessions: daySessions, Count: len(daySessions), Time: daySessions[0].Time})
+	for day, daySessions := range daySessionsMap {
+		days = append(days, &Day{Sessions: daySessions, Count: len(daySessions), Day: day})
 	}
 	return days, err
 }

@@ -14,7 +14,7 @@ func TestQuery(t *testing.T) {
 	sessions := []*Session{{Time: time.Now(), Challenge: "PERFECT", Notes: "None"},
 		{Time: time.Now().Add(-24 * time.Hour), Challenge: "OVER", Notes: "None 2"}}
 	repo.EXPECT().Query(gomock.Any()).Return(sessions, nil)
-	data, err := sessionService.QueryData(-1 * time.Hour)
+	data, err := sessionService.ReportForPreviousDays(-1 * time.Hour)
 	if err != nil {
 		t.Fail()
 	}
@@ -32,13 +32,17 @@ func TestQuery(t *testing.T) {
 		t.Fail()
 	}
 
-	if day1.Time != sessions[0].Time {
-		t.Fail()
+	if day1.Day != sessions[0].Time.Format("2006-01-02") {
+		t.Errorf("date mismatch")
 	}
 
 	day2 := data[1]
 	if day2.Sessions[0] != sessions[1] {
 		t.Fail()
+	}
+
+	if day2.Day != sessions[1].Time.Format("2006-01-02") {
+		t.Errorf("date mismatch")
 	}
 }
 

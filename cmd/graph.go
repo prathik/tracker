@@ -26,7 +26,7 @@ var graphCmd = &cobra.Command{
 		defer bolt.Close()
 		ss := domain.NewSessionService(bolt)
 		duration, _ := time.ParseDuration("168h") // 7 days
-		queryData, err := ss.QueryData(duration)
+		queryData, err := ss.ReportForPreviousDays(duration)
 		if err != nil {
 			color.Red("error: %s", err)
 			return

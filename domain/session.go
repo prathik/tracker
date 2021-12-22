@@ -7,7 +7,7 @@ type Days []*Day
 
 // Day is a collection of sessions done in a day.
 type Day struct {
-	Time     time.Time
+	Day     string
 	Count    int
 	Sessions []*Session
 }
