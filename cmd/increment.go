@@ -30,13 +30,15 @@ var incrementCmd = &cobra.Command{
 
 		challenge := args[0]
 
+		var session *domain.Session
+
 		// Save count number of sessions
 		if startTime == "" {
 			if count > 1 {
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			sessionService.Save(&domain.Session{Challenge: challenge, Notes: notesResult, Time: time.Now()})
+			session = &domain.Session{Challenge: challenge, Notes: notesResult, Time: time.Now()}
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -44,12 +46,17 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				sessionService.Save(&domain.Session{Challenge: challenge, Notes: notesResult, Time: sessionTime})
+				session = &domain.Session{Challenge: challenge, Notes: notesResult, Time: sessionTime}
 			}
 		}
 
-		fmt.Printf("\n")
+		err := sessionService.Save(session)
+		if err != nil {
+			color.Red("error: %s", err)
+			return
+		}
 
+		fmt.Printf("\n")
 		PrintWeekData(sessionService)
 	},
 }
