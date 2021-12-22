@@ -20,7 +20,11 @@ func PrintWeekData(sessionService *domain.SessionService) {
 	prevCount := 0.0
 	prevTotal := 0.0
 	duration, _ := time.ParseDuration("168h") // 7 days
-	queryData := sessionService.QueryData(duration)
+	queryData, err := sessionService.QueryData(duration)
+	if err != nil {
+		color.Red("error: %s", err)
+		return
+	}
 	today := time.Now().Format("2006-01-02")
 	for _, d := range queryData.Days {
 		day := d.Time.Format("2006-01-02")
@@ -43,7 +47,12 @@ func PrintWeekData(sessionService *domain.SessionService) {
 func PrintByDay(ss *domain.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Date", "Flow", "Notes"})
-	for _, d := range ss.QueryData(since).Days {
+	days, err := ss.QueryData(since)
+	if err != nil {
+		color.Red("error: %s", err)
+		return
+	}
+	for _, d := range days.Days {
 		for _, wi := range d.Sessions {
 			printData := []string{d.Time.Format("2006-01-02"), strconv.Itoa(domain.Score(wi.Challenge)), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(domain.Score(wi.Challenge)), {}})
@@ -58,7 +67,12 @@ func PrintWithTime(ss *domain.SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Time", "Delta", "Flow", "Notes"})
 	now := time.Now()
-	for _, d := range ss.QueryData(since).Days {
+	days, err := ss.QueryData(since)
+	if err != nil {
+		color.Red("error: %s", err)
+		return
+	}
+	for _, d := range days.Days {
 		for _, wi := range d.Sessions {
 			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), strconv.Itoa(domain.Score(wi.Challenge)), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, {}, getColour(domain.Score(wi.Challenge)), {}})

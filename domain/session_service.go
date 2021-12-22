@@ -30,7 +30,7 @@ func (s *SessionService) Save(item *Session) error {
 	return nil
 }
 
-func (s *SessionService) QueryData(daysBack time.Duration) *Days {
+func (s *SessionService) QueryData(daysBack time.Duration) (*Days, error) {
 	return s.repo.QueryData(daysBack)
 }
 

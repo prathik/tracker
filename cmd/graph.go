@@ -17,11 +17,20 @@ var graphCmd = &cobra.Command{
 	Short: "Plots the graph for flow",
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
-		bolt := repo.NewBoltDbRepo(db)
+		bolt, err := repo.NewBoltDbRepo(db)
+		if err != nil {
+			color.Red("error: %s", err)
+			return
+		}
+
 		defer bolt.Close()
 		ss := domain.NewSessionService(bolt)
 		duration, _ := time.ParseDuration("168h") // 7 days
-		queryData := ss.QueryData(duration)
+		queryData, err := ss.QueryData(duration)
+		if err != nil {
+			color.Red("error: %s", err)
+			return
+		}
 		var flow []float64
 		for _, v := range queryData.Days {
 			for _, session := range v.Sessions {

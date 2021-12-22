@@ -13,12 +13,18 @@ import (
 // incrementCmd represents the increment command
 var incrementCmd = &cobra.Command{
 	Use:   "increment",
+	Aliases: []string{"inc"},
 	Short: "Increment number of sessions done",
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
-		bolt := repo.NewBoltDbRepo(db)
+		bolt, err := repo.NewBoltDbRepo(db)
+		if err != nil {
+			color.Red("error: %s", err)
+			return
+		}
 		defer bolt.Close()
+
 		sessionService := domain.NewSessionService(bolt)
 
 		startTime, _ := cmd.Flags().GetString("start-time")
@@ -50,7 +56,7 @@ var incrementCmd = &cobra.Command{
 			}
 		}
 
-		err := sessionService.Save(session)
+		err = sessionService.Save(session)
 		if err != nil {
 			color.Red("error: %s", err)
 			return

@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/prathik/tracker/repo"
+	"github.com/fatih/color"
 	"github.com/prathik/tracker/domain"
+	"github.com/prathik/tracker/repo"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -15,7 +16,11 @@ var showCmd = &cobra.Command{
 	Short: "Shows the activities done in the past (by default week)",
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
-		bolt := repo.NewBoltDbRepo(db)
+		bolt, err := repo.NewBoltDbRepo(db)
+		if err != nil {
+			color.Red("error: %s", err)
+			return
+		}
 		defer bolt.Close()
 		ss := domain.NewSessionService(bolt)
 

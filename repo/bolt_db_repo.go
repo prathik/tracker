@@ -2,6 +2,7 @@ package repo
 
 import (
 	"bytes"
+	"errors"
 	"github.com/boltdb/bolt"
 	"github.com/prathik/tracker/domain"
 	"github.com/vmihailenco/msgpack/v5"
@@ -19,18 +20,24 @@ type boltDbRepo struct {
 	db *bolt.DB
 }
 
-func (b *boltDbRepo) QueryData(duration time.Duration) *domain.Days {
+func (b *boltDbRepo) QueryData(duration time.Duration) (*domain.Days, error) {
 	dayCount := map[string]*domain.Day{}
-	_ = b.db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(bucket)).Cursor()
+
+	err := b.db.View(func(tx *bolt.Tx) error {
+		bkt := tx.Bucket([]byte(bucket))
+
+		if bkt == nil {
+			return errors.New("bucket does not exist")
+		}
+
+		cursor := bkt.Cursor()
 		now := time.Now()
 		nowStartOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 		minDate := nowStartOfDay.Add(-duration).Format(timeFormat)
-
 		min := []byte(minDate)
 		max := []byte(now.Format(timeFormat))
 
-		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
+		for k, v := cursor.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = cursor.Next() {
 			t, _ := time.Parse(timeFormat, string(k))
 			dayData := dayCount[t.Format("06-01-02")]
 			if dayData == nil {
@@ -39,7 +46,7 @@ func (b *boltDbRepo) QueryData(duration time.Duration) *domain.Days {
 			var item domain.Session
 			err := msgpack.Unmarshal(v, &item)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			dayData.Count = dayData.Count + 1
 			dayData.Sessions = append(dayData.Sessions, &item)
@@ -47,6 +54,10 @@ func (b *boltDbRepo) QueryData(duration time.Duration) *domain.Days {
 		}
 		return nil
 	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	var dayData []*domain.Day
 	for _, v := range dayCount {
@@ -57,7 +68,7 @@ func (b *boltDbRepo) QueryData(duration time.Duration) *domain.Days {
 		return dayData[i].Time.Before(dayData[j].Time)
 	})
 
-	return &domain.Days{Days: dayData}
+	return &domain.Days{Days: dayData}, nil
 }
 
 func (b *boltDbRepo) Save(item *domain.Session) {
@@ -103,10 +114,10 @@ func GetSlotFromTime(currentTime time.Time) []byte {
 	return timeSlot
 }
 
-func NewBoltDbRepo(dbFilePath string) *boltDbRepo {
+func NewBoltDbRepo(dbFilePath string) (*boltDbRepo, error) {
 	db, err := bolt.Open(dbFilePath, 0600, nil)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return &boltDbRepo{db: db}
+	return &boltDbRepo{db: db}, nil
 }

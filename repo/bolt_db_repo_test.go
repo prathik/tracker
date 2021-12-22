@@ -11,12 +11,27 @@ import (
 
 const repoFile = "./repo.db"
 var _ = Describe("BoltDbRepo", func() {
+	Describe("Query data", func() {
+		Context("File not present", func() {
+			It("Gets empty data", func() {
+				boltDbRepo, err := repo.NewBoltDbRepo("unknown-file")
+				Expect(err).Should(BeNil())
+				_, err = boltDbRepo.QueryData(1 * time.Hour)
+				Expect(err).ShouldNot(BeNil())
+				err = os.Remove("./unknown-file")
+				if err != nil {
+					panic(err)
+				}
+			})
+		})
+	})
+
 	Describe("Storing data", func() {
 		Context("A new entry is added", func() {
 			It("Stores the entry which can later be queried", func() {
-				boltDbRepo := repo.NewBoltDbRepo(repoFile)
+				boltDbRepo, _ := repo.NewBoltDbRepo(repoFile)
 				boltDbRepo.Save(&domain.Session{Time: time.Now(), Challenge: "PERFECT", Notes: "test note"})
-				data := boltDbRepo.QueryData(1 * time.Hour)
+				data, _ := boltDbRepo.QueryData(1 * time.Hour)
 				Expect(data.Days).Should(Not(BeEmpty()))
 				Expect(data.Days[0].Count).Should(Equal(1))
 				Expect(data.Days[0].Sessions).Should(HaveLen(1))
