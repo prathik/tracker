@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/manifoldco/promptui"
 	"github.com/prathik/tracker/repo"
 	"github.com/prathik/tracker/service"
 	"github.com/spf13/cobra"
@@ -16,46 +15,23 @@ import (
 var incrementCmd = &cobra.Command{
 	Use:   "increment",
 	Short: "Increment number of sessions done",
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
 		ss := service.NewSessionService(bolt)
 
-		shortMode, _ := cmd.Flags().GetBool("short")
-		var (
-			workResult string
-			joy int
-			impact int
-			notesResult string
-		)
-		if !shortMode {
-			workPrompt := promptui.Prompt{
-				Label: "Work",
-				Validate: func(s string) error {
-					if len(s) < 7 {
-						return errors.New("enter a value")
-					}
 
-					return nil
-				},
-			}
-			workResult, _ = workPrompt.Run()
-			joy = loadInteger("Joy [0-10]")
-			impact = loadInteger("Impact [0-10]")
-			notesPrompt := promptui.Prompt{
-				Label:   "Notes",
-				Default: "",
-			}
-			notesResult, _ = notesPrompt.Run()
-		} else {
-			workResult = "short mode"
-			joy = 5
-			impact = 5
-			notesResult = "short mode"
-		}
+		joy, _ := strconv.Atoi(args[0])
+		impact, _ := strconv.Atoi(args[1])
+
 		startTime, _ := cmd.Flags().GetString("start-time")
 		count, _ := cmd.Flags().GetInt("count")
+
+		const (
+			notesResult = "deprecated"
+		)
 
 		// Create count number of sessions
 		if startTime == "" {
@@ -63,7 +39,7 @@ var incrementCmd = &cobra.Command{
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
+			ss.Create(&service.Item{Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -71,7 +47,7 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				ss.Create(&service.Item{Work: workResult, Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
+				ss.Create(&service.Item{Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
 			}
 		}
 
@@ -97,31 +73,8 @@ func SessionTime(startTime string, count int) (time.Time, error) {
 	return sessionTime, nil
 }
 
-func loadInteger(label string) int {
-	intPrompt := promptui.Prompt{
-		Label:    label,
-		Validate: validateNumber,
-	}
-	result, _ := intPrompt.Run()
-	intVal, _ := strconv.Atoi(result)
-	return intVal
-}
-
-func validateNumber(input string) error {
-	ip, err := strconv.Atoi(input)
-	if err != nil {
-		return errors.New("invalid number")
-	}
-
-	if ip > 10 || ip < 0 {
-		return errors.New("enter between 0 to 10")
-	}
-	return nil
-}
-
 func init() {
 	rootCmd.AddCommand(incrementCmd)
 	incrementCmd.Flags().String("start-time", "", "Start hour and minute, use hh:mm format")
 	incrementCmd.Flags().Int("count", 1, "Count of sessions done")
-	incrementCmd.Flags().Bool("short", false, "Short mode")
 }
