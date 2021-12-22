@@ -16,5 +16,4 @@ type Day struct {
 type Session struct {
 	Time   time.Time // Time when the item was done
 	Challenge string // Challenge is OVER, PERFECT or UNDER
-	Notes  string    // Any learnings from the Work is captured here
 }

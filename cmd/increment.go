@@ -44,7 +44,7 @@ var incrementCmd = &cobra.Command{
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			session = &domain.Session{Challenge: challenge, Notes: notesResult, Time: time.Now()}
+			session = &domain.Session{Challenge: challenge, Time: time.Now()}
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -52,7 +52,7 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				session = &domain.Session{Challenge: challenge, Notes: notesResult, Time: sessionTime}
+				session = &domain.Session{Challenge: challenge, Time: sessionTime}
 			}
 		}
 
