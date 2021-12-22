@@ -7,7 +7,6 @@ import (
 	"github.com/prathik/tracker/domain"
 	"github.com/prathik/tracker/repo"
 	"github.com/spf13/cobra"
-	"strconv"
 	"time"
 )
 
@@ -15,15 +14,12 @@ import (
 var incrementCmd = &cobra.Command{
 	Use:   "increment",
 	Short: "Increment number of sessions done",
-	Args: cobra.ExactArgs(2),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
 		sessionService := domain.NewSessionService(bolt)
-
-		joy, _ := strconv.Atoi(args[0])
-		impact, _ := strconv.Atoi(args[1])
 
 		startTime, _ := cmd.Flags().GetString("start-time")
 		count, _ := cmd.Flags().GetInt("count")
@@ -32,13 +28,15 @@ var incrementCmd = &cobra.Command{
 			notesResult = "deprecated"
 		)
 
+		challenge := args[0]
+
 		// Save count number of sessions
 		if startTime == "" {
 			if count > 1 {
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			sessionService.Save(&domain.Session{Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
+			sessionService.Save(&domain.Session{Challenge: challenge, Notes: notesResult, Time: time.Now()})
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -46,7 +44,7 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				sessionService.Save(&domain.Session{Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
+				sessionService.Save(&domain.Session{Challenge: challenge, Notes: notesResult, Time: sessionTime})
 			}
 		}
 

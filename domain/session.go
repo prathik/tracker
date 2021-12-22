@@ -17,7 +17,6 @@ type Day struct {
 // Session represents a single work session.
 type Session struct {
 	Time   time.Time // Time when the item was done
-	Joy    int       // Joy in the Work
-	Impact int       // Business Impact of the Work
+	Challenge string // Challenge is OVER, PERFECT or UNDER
 	Notes  string    // Any learnings from the Work is captured here
 }

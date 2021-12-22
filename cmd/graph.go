@@ -18,8 +18,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/prathik/tracker/repo"
 	"github.com/prathik/tracker/domain"
+	"github.com/prathik/tracker/repo"
 	"time"
 
 	"github.com/guptarohit/asciigraph"
@@ -37,23 +37,16 @@ var graphCmd = &cobra.Command{
 		ss := domain.NewSessionService(bolt)
 		duration, _ := time.ParseDuration("168h") // 7 days
 		queryData := ss.QueryData(duration)
-		var importance []float64
-		var joy []float64
+		var flow []float64
 		for _, v := range queryData.Days {
-			for _, d := range v.Sessions {
-				importance = append(importance, float64(d.Impact))
-				joy = append(joy, float64(d.Joy))
+			for _, session := range v.Sessions {
+				flow = append(flow, float64(domain.Score(session.Challenge)))
 			}
 		}
-		impGraph := asciigraph.Plot(importance)
+		flowGraph := asciigraph.Plot(flow)
 
-		color.Green("Impact")
-		fmt.Println(impGraph)
-
-		joyGraph := asciigraph.Plot(joy)
-		color.Green("\nJoy")
-		fmt.Println(joyGraph)
-
+		color.Green("Flow")
+		fmt.Println(flowGraph)
 	},
 }
 
