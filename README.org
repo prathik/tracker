@@ -4,9 +4,9 @@ Tracker enables you to optimize your work by tracking tasks that you did and sub
 
 ** Background
 *** Flow State
-![](flow.jpg)
+[[flow.jpg]]
 
-Flow happens when skill meets challenge. In `tracker` we regularly monitor whether the work challenge or effort matches
+Flow happens when skill meets challenge. In *tracker* we regularly monitor whether the work challenge or effort matches
 our skill level.
 
 *** Pomodoro
