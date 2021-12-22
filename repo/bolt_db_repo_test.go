@@ -19,10 +19,16 @@ var _ = Describe("BoltDbRepo", func() {
 				item := domain.NewInboxItem(time.Now(), "test", boltDbRepo)
 				err := item.Save()
 				Expect(err).Should(BeNil())
+
+				item1 := domain.NewInboxItem(time.Now(), "test 2", boltDbRepo)
+				err = item1.Save()
+				Expect(err).Should(BeNil())
+
 				items, err := boltDbRepo.GetAllInbox()
 				Expect(err).Should(BeNil())
-				Expect(items).ShouldNot(BeEmpty())
+				Expect(items).Should(HaveLen(2))
 				Expect(items[0].Text).Should(Equal("test"))
+				Expect(items[1].Text).Should(Equal("test 2"))
 				err = os.Remove(repoFile)
 				if err != nil {
 					panic(err)

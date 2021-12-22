@@ -2,11 +2,13 @@ package repo
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"github.com/boltdb/bolt"
 	"github.com/prathik/tracker/domain"
 	"github.com/vmihailenco/msgpack/v5"
 	"log"
+	"sort"
 	"time"
 )
 
@@ -26,12 +28,15 @@ func (b *boltDbRepo) Store(item *domain.InboxItem) error {
 		if err != nil {
 			log.Fatal(err)
 		}
-		timeSlot := GetSlotFromTime(item.CapturedTime)
-		b, err := msgpack.Marshal(item)
+
+		timeSlot := make([]byte, 8)
+		binary.LittleEndian.PutUint64(timeSlot, uint64(time.Now().UnixNano()))
+
+		itemMarshalled, err := msgpack.Marshal(item)
 		if err != nil {
 			return err
 		}
-		return w.Put(timeSlot, b)
+		return w.Put(timeSlot, itemMarshalled)
 	})
 
 	return err
@@ -129,6 +134,10 @@ func (b *boltDbRepo) GetAllInbox() ([]*domain.InboxItem, error) {
 			items = append(items, &item)
 			return nil
 		})
+	})
+
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].CapturedTime.Before(items[j].CapturedTime)
 	})
 
 	return items, err
