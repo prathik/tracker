@@ -30,10 +30,6 @@ var incrementCmd = &cobra.Command{
 		startTime, _ := cmd.Flags().GetString("start-time")
 		count, _ := cmd.Flags().GetInt("count")
 
-		const (
-			notesResult = "deprecated"
-		)
-
 		challenge := args[0]
 
 		var session *domain.Session

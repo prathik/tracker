@@ -11,22 +11,40 @@ import (
 )
 
 const (
-	bucket = "sessions"
-	timeFormat = time.RFC3339
+	sessionsBucket = "sessions"
+	timeFormat     = time.RFC3339
+	inbox = "inbox"
 )
 
 type boltDbRepo struct {
 	db *bolt.DB
 }
 
+func (b *boltDbRepo) Store(item *domain.InboxItem) error {
+	err := b.db.Update(func(tx *bolt.Tx) error {
+		w, err := tx.CreateBucketIfNotExists([]byte(inbox))
+		if err != nil {
+			log.Fatal(err)
+		}
+		timeSlot := GetSlotFromTime(item.CapturedTime)
+		b, err := msgpack.Marshal(item)
+		if err != nil {
+			return err
+		}
+		return w.Put(timeSlot, b)
+	})
+
+	return err
+}
+
 func (b *boltDbRepo) Query(duration time.Duration) ([]*domain.Session, error) {
 	var sessions []*domain.Session
 
 	err := b.db.View(func(tx *bolt.Tx) error {
-		bkt := tx.Bucket([]byte(bucket))
+		bkt := tx.Bucket([]byte(sessionsBucket))
 
 		if bkt == nil {
-			return errors.New("bucket does not exist")
+			return errors.New("sessions bucket does not exist")
 		}
 
 		cursor := bkt.Cursor()
@@ -57,16 +75,16 @@ func (b *boltDbRepo) Query(duration time.Duration) ([]*domain.Session, error) {
 
 func (b *boltDbRepo) Save(session *domain.Session) {
 	err := b.db.Update(func(tx *bolt.Tx) error {
-		w, err := tx.CreateBucketIfNotExists([]byte(bucket))
+		w, err := tx.CreateBucketIfNotExists([]byte(sessionsBucket))
 		if err != nil {
 			log.Fatal(err)
 		}
 		timeSlot := GetSlotFromTime(session.Time)
-		b, err := msgpack.Marshal(session)
+		data, err := msgpack.Marshal(session)
 		if err != nil {
 			panic(err)
 		}
-		return w.Put(timeSlot, b)
+		return w.Put(timeSlot, data)
 	})
 
 	if err != nil {
@@ -76,7 +94,7 @@ func (b *boltDbRepo) Save(session *domain.Session) {
 
 func (b *boltDbRepo) Pop() {
 	err := b.db.Update(func(tx *bolt.Tx) error {
-		w, err := tx.CreateBucketIfNotExists([]byte(bucket))
+		w, err := tx.CreateBucketIfNotExists([]byte(sessionsBucket))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,6 +109,29 @@ func (b *boltDbRepo) Pop() {
 
 func (b *boltDbRepo) Close() {
 	_ = b.db.Close()
+}
+
+func (b *boltDbRepo) GetAllInbox() ([]*domain.InboxItem, error) {
+	var items []*domain.InboxItem
+	err := b.db.View(func(tx *bolt.Tx) error {
+		bkt := tx.Bucket([]byte(inbox))
+
+		if bkt == nil {
+			return errors.New("inbox bucket does not exist")
+		}
+
+		return bkt.ForEach(func(k, v []byte) error {
+			var item domain.InboxItem
+			err := msgpack.Unmarshal(v, &item)
+			if err != nil {
+				return err
+			}
+			items = append(items, &item)
+			return nil
+		})
+	})
+
+	return items, err
 }
 
 func GetSlotFromTime(currentTime time.Time) []byte {
