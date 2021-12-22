@@ -27,31 +27,10 @@ var incrementCmd = &cobra.Command{
 
 		sessionService := domain.NewSessionService(bolt)
 
-		startTime, _ := cmd.Flags().GetString("start-time")
-		count, _ := cmd.Flags().GetInt("count")
-
 		challenge := args[0]
 
 		var session *domain.Session
-
-		// Save count number of sessions
-		if startTime == "" {
-			if count > 1 {
-				color.Red("count > 1 is only supported when --start-time flag is passed")
-				return
-			}
-			session = &domain.Session{Challenge: challenge, Time: time.Now()}
-		} else {
-			for i := 0; i < count; i++ {
-				sessionTime, err := SessionTime(startTime, i)
-				if err != nil {
-					color.Red(err.Error())
-					return
-				}
-				session = &domain.Session{Challenge: challenge, Time: sessionTime}
-			}
-		}
-
+		session = &domain.Session{Challenge: challenge, Time: time.Now()}
 		err = sessionService.Save(session)
 		if err != nil {
 			color.Red("error: %s", err)
@@ -81,6 +60,4 @@ func SessionTime(startTime string, count int) (time.Time, error) {
 
 func init() {
 	rootCmd.AddCommand(incrementCmd)
-	incrementCmd.Flags().String("start-time", "", "Start hour and minute, use hh:mm format")
-	incrementCmd.Flags().Int("count", 1, "Count of sessions done")
 }
