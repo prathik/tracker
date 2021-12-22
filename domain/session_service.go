@@ -1,13 +1,33 @@
 package domain
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type SessionService struct {
 	repo SessionRepo
 }
 
-func (s *SessionService) Save(item *Session) {
+func validChallenge(challenge string) bool {
+	switch challenge {
+	case "PERFECT":
+		return true
+	case "OVER":
+		return true
+	case "UNDER":
+		return true
+	default:
+		return false
+	}
+}
+
+func (s *SessionService) Save(item *Session) error {
+	if !validChallenge(item.Challenge) {
+		return errors.New("invalid challenge level")
+	}
 	s.repo.Save(item)
+	return nil
 }
 
 func (s *SessionService) QueryData(daysBack time.Duration) *Days {
