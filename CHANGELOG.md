@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.8] - 2021-12-22
+### Changed
+- Decouple work log from session log
+
 ## [0.0.7] - 2021-06-09
 ### Added
 - Flag to show items since
@@ -45,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support to add work
 - Display previous week's data on adding work
 
-[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/prathik/tracker/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/prathik/tracker/releases/tag/v0.0.8
 [0.0.7]: https://github.com/prathik/tracker/releases/tag/v0.0.7
 [0.0.6]: https://github.com/prathik/tracker/releases/tag/v0.0.6
 [0.0.5]: https://github.com/prathik/tracker/releases/tag/v0.0.5
