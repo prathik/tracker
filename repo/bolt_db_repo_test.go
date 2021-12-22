@@ -16,7 +16,7 @@ var _ = Describe("BoltDbRepo", func() {
 			It("Gets empty data", func() {
 				boltDbRepo, err := repo.NewBoltDbRepo("unknown-file")
 				Expect(err).Should(BeNil())
-				_, err = boltDbRepo.QueryData(1 * time.Hour)
+				_, err = boltDbRepo.Query(1 * time.Hour)
 				Expect(err).ShouldNot(BeNil())
 				err = os.Remove("./unknown-file")
 				if err != nil {
@@ -31,11 +31,9 @@ var _ = Describe("BoltDbRepo", func() {
 			It("Stores the entry which can later be queried", func() {
 				boltDbRepo, _ := repo.NewBoltDbRepo(repoFile)
 				boltDbRepo.Save(&domain.Session{Time: time.Now(), Challenge: "PERFECT", Notes: "test note"})
-				data, _ := boltDbRepo.QueryData(1 * time.Hour)
-				Expect(data.Days).Should(Not(BeEmpty()))
-				Expect(data.Days[0].Count).Should(Equal(1))
-				Expect(data.Days[0].Sessions).Should(HaveLen(1))
-				item := data.Days[0].Sessions[0]
+				sessions, _ := boltDbRepo.Query(1 * time.Hour)
+				Expect(sessions).Should(HaveLen(1))
+				item := sessions[0]
 				Expect(item.Notes).Should(Equal("test note"))
 				Expect(item.Challenge).Should(Equal("PERFECT"))
 				boltDbRepo.Close()

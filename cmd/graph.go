@@ -32,7 +32,7 @@ var graphCmd = &cobra.Command{
 			return
 		}
 		var flow []float64
-		for _, v := range queryData.Days {
+		for _, v := range queryData {
 			for _, session := range v.Sessions {
 				flow = append(flow, float64(domain.Score(session.Challenge)))
 			}

@@ -26,7 +26,7 @@ func PrintWeekData(sessionService *domain.SessionService) {
 		return
 	}
 	today := time.Now().Format("2006-01-02")
-	for _, d := range queryData.Days {
+	for _, d := range queryData {
 		day := d.Time.Format("2006-01-02")
 		if today != day {
 			prevCount = prevCount + 1
@@ -52,7 +52,7 @@ func PrintByDay(ss *domain.SessionService, since time.Duration) {
 		color.Red("error: %s", err)
 		return
 	}
-	for _, d := range days.Days {
+	for _, d := range days {
 		for _, wi := range d.Sessions {
 			printData := []string{d.Time.Format("2006-01-02"), strconv.Itoa(domain.Score(wi.Challenge)), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(domain.Score(wi.Challenge)), {}})
@@ -72,7 +72,7 @@ func PrintWithTime(ss *domain.SessionService, since time.Duration) {
 		color.Red("error: %s", err)
 		return
 	}
-	for _, d := range days.Days {
+	for _, d := range days {
 		for _, wi := range d.Sessions {
 			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), strconv.Itoa(domain.Score(wi.Challenge)), wi.Notes}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, {}, getColour(domain.Score(wi.Challenge)), {}})

@@ -46,18 +46,19 @@ func (mr *MockSessionRepoMockRecorder) Pop() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Pop", reflect.TypeOf((*MockSessionRepo)(nil).Pop))
 }
 
-// QueryData mocks base method.
-func (m *MockSessionRepo) QueryData(duration time.Duration) *Days {
+// Query mocks base method.
+func (m *MockSessionRepo) Query(duration time.Duration) ([]*Session, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "QueryData", duration)
-	ret0, _ := ret[0].(*Days)
-	return ret0
+	ret := m.ctrl.Call(m, "Query", duration)
+	ret0, _ := ret[0].([]*Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// QueryData indicates an expected call of QueryData.
-func (mr *MockSessionRepoMockRecorder) QueryData(duration interface{}) *gomock.Call {
+// Query indicates an expected call of Query.
+func (mr *MockSessionRepoMockRecorder) Query(duration interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryData", reflect.TypeOf((*MockSessionRepo)(nil).QueryData), duration)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockSessionRepo)(nil).Query), duration)
 }
 
 // Save mocks base method.

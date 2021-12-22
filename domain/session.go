@@ -3,9 +3,7 @@ package domain
 import "time"
 
 // Days represents the work done in multiple days.
-type Days struct {
-	Days []*Day
-}
+type Days []*Day
 
 // Day is a collection of sessions done in a day.
 type Day struct {

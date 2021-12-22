@@ -7,7 +7,6 @@ import (
 	"github.com/prathik/tracker/domain"
 	"github.com/vmihailenco/msgpack/v5"
 	"log"
-	"sort"
 	"time"
 )
 
@@ -20,8 +19,8 @@ type boltDbRepo struct {
 	db *bolt.DB
 }
 
-func (b *boltDbRepo) QueryData(duration time.Duration) (*domain.Days, error) {
-	dayCount := map[string]*domain.Day{}
+func (b *boltDbRepo) Query(duration time.Duration) ([]*domain.Session, error) {
+	var sessions []*domain.Session
 
 	err := b.db.View(func(tx *bolt.Tx) error {
 		bkt := tx.Bucket([]byte(bucket))
@@ -38,19 +37,13 @@ func (b *boltDbRepo) QueryData(duration time.Duration) (*domain.Days, error) {
 		max := []byte(now.Format(timeFormat))
 
 		for k, v := cursor.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = cursor.Next() {
-			t, _ := time.Parse(timeFormat, string(k))
-			dayData := dayCount[t.Format("06-01-02")]
-			if dayData == nil {
-				dayData = &domain.Day{Time: t, Count: 0}
-			}
-			var item domain.Session
-			err := msgpack.Unmarshal(v, &item)
+
+			var session domain.Session
+			err := msgpack.Unmarshal(v, &session)
 			if err != nil {
 				return err
 			}
-			dayData.Count = dayData.Count + 1
-			dayData.Sessions = append(dayData.Sessions, &item)
-			dayCount[t.Format("06-01-02")] = dayData
+			sessions = append(sessions, &session)
 		}
 		return nil
 	})
@@ -59,26 +52,17 @@ func (b *boltDbRepo) QueryData(duration time.Duration) (*domain.Days, error) {
 		return nil, err
 	}
 
-	var dayData []*domain.Day
-	for _, v := range dayCount {
-		dayData = append(dayData, v)
-	}
-
-	sort.Slice(dayData, func(i, j int) bool {
-		return dayData[i].Time.Before(dayData[j].Time)
-	})
-
-	return &domain.Days{Days: dayData}, nil
+	return sessions, nil
 }
 
-func (b *boltDbRepo) Save(item *domain.Session) {
+func (b *boltDbRepo) Save(session *domain.Session) {
 	err := b.db.Update(func(tx *bolt.Tx) error {
 		w, err := tx.CreateBucketIfNotExists([]byte(bucket))
 		if err != nil {
 			log.Fatal(err)
 		}
-		timeSlot := GetSlotFromTime(item.Time)
-		b, err := msgpack.Marshal(item)
+		timeSlot := GetSlotFromTime(session.Time)
+		b, err := msgpack.Marshal(session)
 		if err != nil {
 			panic(err)
 		}
