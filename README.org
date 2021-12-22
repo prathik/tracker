@@ -1,6 +1,6 @@
 * Tracker
 ** Summary
-Tracker enables you to optimize your work by tracking tasks that you did and subjective feelings around it. This data can later be used to thinking about how to improve both impact and joy of your work.
+Tracker enables improving happiness and impact of work.
 
 ** Background
 *** Flow State
@@ -20,6 +20,7 @@ Pomodoro is a time boxing method where you set a distraction free time to do foc
 
 ** Future work
 1. Incorporate GTD
+2. Incorporate Eisenhower Matrix
 
 ** How?
 *** Daily
