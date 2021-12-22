@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"github.com/prathik/tracker/repo"
-	"github.com/prathik/tracker/service"
+	"github.com/prathik/tracker/domain"
 
 	"github.com/spf13/cobra"
 )
@@ -36,7 +36,7 @@ to quickly create a Cobra application.`,
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
-		ss := service.NewSessionService(bolt)
+		ss := domain.NewSessionService(bolt)
 		PrintWeekData(ss)
 	},
 }

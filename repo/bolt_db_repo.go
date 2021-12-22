@@ -3,23 +3,26 @@ package repo
 import (
 	"bytes"
 	"github.com/boltdb/bolt"
-	"github.com/prathik/tracker/service"
+	"github.com/prathik/tracker/domain"
 	"github.com/vmihailenco/msgpack/v5"
 	"log"
 	"sort"
 	"time"
 )
 
-const timeFormat = time.RFC3339
+const (
+	bucket = "sessions"
+	timeFormat = time.RFC3339
+)
 
 type boltDbRepo struct {
 	db *bolt.DB
 }
 
-func (b *boltDbRepo) QueryData(duration time.Duration) *service.DayDataCollection {
-	dayCount := map[string]*service.DayData{}
+func (b *boltDbRepo) QueryData(duration time.Duration) *domain.Days {
+	dayCount := map[string]*domain.Day{}
 	_ = b.db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte("work")).Cursor()
+		c := tx.Bucket([]byte(bucket)).Cursor()
 		now := time.Now()
 		nowStartOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 		minDate := nowStartOfDay.Add(-duration).Format(timeFormat)
@@ -31,21 +34,21 @@ func (b *boltDbRepo) QueryData(duration time.Duration) *service.DayDataCollectio
 			t, _ := time.Parse(timeFormat, string(k))
 			dayData := dayCount[t.Format("06-01-02")]
 			if dayData == nil {
-				dayData = &service.DayData{Time: t, Count: 0}
+				dayData = &domain.Day{Time: t, Count: 0}
 			}
-			var item service.Item
+			var item domain.Session
 			err := msgpack.Unmarshal(v, &item)
 			if err != nil {
 				panic(err)
 			}
 			dayData.Count = dayData.Count + 1
-			dayData.WorkItem = append(dayData.WorkItem, &item)
+			dayData.Sessions = append(dayData.Sessions, &item)
 			dayCount[t.Format("06-01-02")] = dayData
 		}
 		return nil
 	})
 
-	var dayData []*service.DayData
+	var dayData []*domain.Day
 	for _, v := range dayCount {
 		dayData = append(dayData, v)
 	}
@@ -54,12 +57,12 @@ func (b *boltDbRepo) QueryData(duration time.Duration) *service.DayDataCollectio
 		return dayData[i].Time.Before(dayData[j].Time)
 	})
 
-	return &service.DayDataCollection{DayDataCollection: dayData}
+	return &domain.Days{Days: dayData}
 }
 
-func (b *boltDbRepo) Create(item *service.Item) {
+func (b *boltDbRepo) Save(item *domain.Session) {
 	err := b.db.Update(func(tx *bolt.Tx) error {
-		w, err := tx.CreateBucketIfNotExists([]byte("work"))
+		w, err := tx.CreateBucketIfNotExists([]byte(bucket))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -78,7 +81,7 @@ func (b *boltDbRepo) Create(item *service.Item) {
 
 func (b *boltDbRepo) Pop() {
 	err := b.db.Update(func(tx *bolt.Tx) error {
-		w, err := tx.CreateBucketIfNotExists([]byte("work"))
+		w, err := tx.CreateBucketIfNotExists([]byte(bucket))
 		if err != nil {
 			log.Fatal(err)
 		}

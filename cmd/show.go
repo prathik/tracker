@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/prathik/tracker/repo"
-	"github.com/prathik/tracker/service"
+	"github.com/prathik/tracker/domain"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -17,7 +17,7 @@ var showCmd = &cobra.Command{
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
-		ss := service.NewSessionService(bolt)
+		ss := domain.NewSessionService(bolt)
 
 		includeTime, _ := cmd.Flags().GetBool("with-time")
 

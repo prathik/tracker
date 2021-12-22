@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/prathik/tracker/domain"
 	"github.com/prathik/tracker/repo"
-	"github.com/prathik/tracker/service"
 	"github.com/spf13/cobra"
 	"strconv"
 	"time"
@@ -20,8 +20,7 @@ var incrementCmd = &cobra.Command{
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
-		ss := service.NewSessionService(bolt)
-
+		sessionService := domain.NewSessionService(bolt)
 
 		joy, _ := strconv.Atoi(args[0])
 		impact, _ := strconv.Atoi(args[1])
@@ -33,13 +32,13 @@ var incrementCmd = &cobra.Command{
 			notesResult = "deprecated"
 		)
 
-		// Create count number of sessions
+		// Save count number of sessions
 		if startTime == "" {
 			if count > 1 {
 				color.Red("count > 1 is only supported when --start-time flag is passed")
 				return
 			}
-			ss.Create(&service.Item{Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
+			sessionService.Save(&domain.Session{Joy: joy, Impact: impact, Notes: notesResult, Time: time.Now()})
 		} else {
 			for i := 0; i < count; i++ {
 				sessionTime, err := SessionTime(startTime, i)
@@ -47,13 +46,13 @@ var incrementCmd = &cobra.Command{
 					color.Red(err.Error())
 					return
 				}
-				ss.Create(&service.Item{Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
+				sessionService.Save(&domain.Session{Joy: joy, Impact: impact, Notes: notesResult, Time: sessionTime})
 			}
 		}
 
 		fmt.Printf("\n")
 
-		PrintWeekData(ss)
+		PrintWeekData(sessionService)
 	},
 }
 

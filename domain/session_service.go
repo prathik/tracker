@@ -1,4 +1,4 @@
-package service
+package domain
 
 import "time"
 
@@ -6,11 +6,11 @@ type SessionService struct {
 	repo SessionRepo
 }
 
-func (s *SessionService) Create(item *Item) {
-	s.repo.Create(item)
+func (s *SessionService) Save(item *Session) {
+	s.repo.Save(item)
 }
 
-func (s *SessionService) QueryData(daysBack time.Duration) *DayDataCollection {
+func (s *SessionService) QueryData(daysBack time.Duration) *Days {
 	return s.repo.QueryData(daysBack)
 }
 

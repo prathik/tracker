@@ -1,12 +1,14 @@
-package service
+package domain
 
 import "time"
 
 type SessionRepo interface {
-	Create(item *Item)
+	// Save a session
+	Save(save *Session)
 
 	// QueryData pulls the data items from daysBack number of days to current date inclusive.
-	QueryData(duration time.Duration) *DayDataCollection
-	// Pop the last item added
+	QueryData(duration time.Duration) *Days
+	
+	// Pop the last session added
 	Pop()
 }

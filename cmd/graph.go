@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/prathik/tracker/repo"
-	"github.com/prathik/tracker/service"
+	"github.com/prathik/tracker/domain"
 	"time"
 
 	"github.com/guptarohit/asciigraph"
@@ -34,13 +34,13 @@ var graphCmd = &cobra.Command{
 		db := cmd.Flag("db").Value.String()
 		bolt := repo.NewBoltDbRepo(db)
 		defer bolt.Close()
-		ss := service.NewSessionService(bolt)
+		ss := domain.NewSessionService(bolt)
 		duration, _ := time.ParseDuration("168h") // 7 days
 		queryData := ss.QueryData(duration)
 		var importance []float64
 		var joy []float64
-		for _, v := range queryData.DayDataCollection {
-			for _, d := range v.WorkItem {
+		for _, v := range queryData.Days {
+			for _, d := range v.Sessions {
 				importance = append(importance, float64(d.Impact))
 				joy = append(joy, float64(d.Joy))
 			}
