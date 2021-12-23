@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/manifoldco/promptui"
 )
 
 // captureCmd represents the capture command
 var captureCmd = &cobra.Command{
 	Use:   "capture",
 	Short: "Capture an inbox item",
-	Args: cobra.ExactArgs(1),
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		db := cmd.Flag("db").Value.String()
 		bolt, err := repo.NewBoltDbRepo(db)
@@ -22,8 +23,12 @@ var captureCmd = &cobra.Command{
 			return
 		}
 		defer bolt.Close()
+		prompt := promptui.Prompt{
+			Label:    "Inbox",
+		}
 
-		inboxItem := domain.NewInboxItem(time.Now(), args[0], bolt)
+		item, err := prompt.Run()
+		inboxItem := domain.NewInboxItem(time.Now(), item, bolt)
 		err = inboxItem.Save()
 		if err != nil {
 			color.Red("error: %s", err)
