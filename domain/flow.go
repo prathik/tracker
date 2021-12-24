@@ -4,9 +4,9 @@ package domain
 // the current skill level and 0 when challenge is under skill level.
 func Score(challenge string) int {
 	switch challenge {
-	case "PERFECT":
+	case "flow":
 		return 10
-	case "OVER":
+	case "anxiety":
 		return 3
 	default:
 		return 0

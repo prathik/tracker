@@ -11,11 +11,11 @@ type SessionService struct {
 
 func validChallenge(challenge string) bool {
 	switch challenge {
-	case "PERFECT":
+	case "flow":
 		return true
-	case "OVER":
+	case "anxiety":
 		return true
-	case "UNDER":
+	case "boredom":
 		return true
 	default:
 		return false

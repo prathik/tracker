@@ -11,8 +11,8 @@ func TestQuery(t *testing.T) {
 	defer ctrl.Finish()
 	repo := NewMockSessionRepo(ctrl)
 	sessionService := NewSessionService(repo)
-	sessions := []*Session{{Time: time.Now(), Challenge: "PERFECT", Notes: "None"},
-		{Time: time.Now().Add(-24 * time.Hour), Challenge: "OVER", Notes: "None 2"}}
+	sessions := []*Session{{Time: time.Now(), Challenge: "flow", Notes: "None"},
+		{Time: time.Now().Add(-24 * time.Hour), Challenge: "anxiety", Notes: "None 2"}}
 	repo.EXPECT().Query(gomock.Any()).Return(sessions, nil)
 	data, err := sessionService.ReportForPreviousDays(-1 * time.Hour)
 	if err != nil {
@@ -54,9 +54,9 @@ func TestChallengeValues(t *testing.T) {
 	}
 
 	tests := []test{
-		{"PERFECT", 1,false},
-		{"OVER", 1,false},
-		{"UNDER", 1,false},
+		{"flow", 1,false},
+		{"anxiety", 1,false},
+		{"boredom", 1,false},
 		{"TEST", 0,true},
 	}
 

@@ -15,5 +15,5 @@ type Day struct {
 // Session represents a single work session.
 type Session struct {
 	Time   time.Time // Time when the item was done
-	Challenge string // Challenge is OVER, PERFECT or UNDER
+	Challenge string // Challenge is anxiety, flow or boredom
 }

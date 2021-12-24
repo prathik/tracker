@@ -48,7 +48,7 @@ go get -u github.com/prathik/tracker
 ** Usage
 *** Increment data for current session
 #+begin_src sh :results verbatim :exports both
-./tracker increment PERFECT
+./tracker increment flow
 #+end_src
 
 **** Output
