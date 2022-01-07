@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -19,6 +20,13 @@ func PrintWeekData(sessionService *SessionService) ([][]string, error) {
 	prevTotal := 0.0
 	duration, _ := time.ParseDuration("168h") // 7 days
 	queryData, err := sessionService.ReportForPreviousDays(duration)
+
+	sort.Slice(queryData, func(i, j int) bool {
+		a, _ := time.Parse("2006-01-02", queryData[i].Day)
+		b, _ := time.Parse("2006-01-02", queryData[j].Day)
+		return a.After(b)
+	})
+
 	if err != nil {
 		return nil, err
 	}
