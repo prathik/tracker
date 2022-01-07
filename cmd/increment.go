@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/prathik/tracker/domain"
 	"github.com/prathik/tracker/repo"
 	"github.com/spf13/cobra"
+	"os"
 	"time"
 )
 
@@ -63,12 +65,16 @@ var incrementCmd = &cobra.Command{
 		}
 
 		fmt.Printf("\n")
-		PrintWeekData(sessionService)
+		data, _ := domain.PrintWeekData(sessionService)
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"Day", "Count"})
+		table.AppendBulk(data)
+		table.Render()
 	},
 }
 
 func SessionTime(startTime string, count int) (time.Time, error) {
-	hour, min, err := HourAndMinuteFromString(startTime)
+	hour, min, err := domain.HourAndMinuteFromString(startTime)
 	if err != nil {
 		return time.Time{}, err
 	}

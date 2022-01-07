@@ -1,11 +1,10 @@
-package cmd
+package domain
 
 import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
-	"github.com/prathik/tracker/domain"
 	"os"
 	"strconv"
 	"strings"
@@ -13,17 +12,15 @@ import (
 )
 
 // PrintWeekData prints the data of the entire week in a tabular format
-func PrintWeekData(sessionService *domain.SessionService) {
-	// Print entire week as a table for a reminder
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Day", "Count"})
+func PrintWeekData(sessionService *SessionService) ([][]string, error) {
+	var weekData [][]string
+
 	prevCount := 0.0
 	prevTotal := 0.0
 	duration, _ := time.ParseDuration("168h") // 7 days
 	queryData, err := sessionService.ReportForPreviousDays(duration)
 	if err != nil {
-		color.Red("error: %s", err)
-		return
+		return nil, err
 	}
 	today := time.Now().Format("2006-01-02")
 	for _, d := range queryData {
@@ -32,19 +29,20 @@ func PrintWeekData(sessionService *domain.SessionService) {
 			prevCount = prevCount + 1
 			prevTotal = prevTotal + float64(d.Count)
 		}
-		table.Append([]string{day, strconv.Itoa(d.Count)})
+		weekData = append(weekData, []string{day, strconv.Itoa(d.Count)})
 	}
 
 	if prevCount != 0 {
 		prevDaysAverage := int(prevTotal / prevCount)
-		color.Green("Count to meet or exceed today = %d", prevDaysAverage)
+		// TODO Convert to current week rolling average
+		color.Green("Average Count = %d", prevDaysAverage)
 	}
 	
-	table.Render()
+	return weekData, nil
 }
 
 // PrintByDay prints the data per day with items of each day in a table
-func PrintByDay(ss *domain.SessionService, since time.Duration) {
+func PrintByDay(ss *SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Date", "Flow"})
 	days, err := ss.ReportForPreviousDays(since)
@@ -54,8 +52,8 @@ func PrintByDay(ss *domain.SessionService, since time.Duration) {
 	}
 	for _, d := range days {
 		for _, wi := range d.Sessions {
-			printData := []string{d.Day, strconv.Itoa(domain.Score(wi.Challenge))}
-			table.Rich(printData, []tablewriter.Colors{{}, getColour(domain.Score(wi.Challenge))})
+			printData := []string{d.Day, strconv.Itoa(Score(wi.Challenge))}
+			table.Rich(printData, []tablewriter.Colors{{}, getColour(Score(wi.Challenge))})
 		}
 
 	}
@@ -63,7 +61,7 @@ func PrintByDay(ss *domain.SessionService, since time.Duration) {
 	table.Render()
 }
 
-func PrintWithTime(ss *domain.SessionService, since time.Duration) {
+func PrintWithTime(ss *SessionService, since time.Duration) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Time", "Delta", "Flow"})
 	now := time.Now()
@@ -74,8 +72,8 @@ func PrintWithTime(ss *domain.SessionService, since time.Duration) {
 	}
 	for _, d := range days {
 		for _, wi := range d.Sessions {
-			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), strconv.Itoa(domain.Score(wi.Challenge))}
-			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(domain.Score(wi.Challenge))})
+			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), strconv.Itoa(Score(wi.Challenge))}
+			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(Score(wi.Challenge))})
 		}
 
 	}

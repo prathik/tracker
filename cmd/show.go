@@ -27,9 +27,9 @@ var showCmd = &cobra.Command{
 		includeTime, _ := cmd.Flags().GetBool("with-time")
 
 		if includeTime {
-			PrintWithTime(ss, time.Duration(daysSince*24)*time.Hour)
+			domain.PrintWithTime(ss, time.Duration(daysSince*24)*time.Hour)
 		} else {
-			PrintByDay(ss, time.Duration(daysSince*24)*time.Hour)
+			domain.PrintByDay(ss, time.Duration(daysSince*24)*time.Hour)
 		}
 	},
 }

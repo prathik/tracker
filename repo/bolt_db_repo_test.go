@@ -30,11 +30,10 @@ var _ = Describe("BoltDbRepo", func() {
 		Context("A new entry is added", func() {
 			It("Stores the entry which can later be queried", func() {
 				boltDbRepo, _ := repo.NewBoltDbRepo(repoFile)
-				boltDbRepo.Save(&domain.Session{Time: time.Now(), Challenge: "flow", Notes: "test note"})
+				boltDbRepo.Save(&domain.Session{Time: time.Now(), Challenge: "flow"})
 				sessions, _ := boltDbRepo.Query(1 * time.Hour)
 				Expect(sessions).Should(HaveLen(1))
 				item := sessions[0]
-				Expect(item.Notes).Should(Equal("test note"))
 				Expect(item.Challenge).Should(Equal("flow"))
 				boltDbRepo.Close()
 				err := os.Remove(repoFile)

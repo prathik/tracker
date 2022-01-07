@@ -1,4 +1,4 @@
-package cmd
+package domain
 
 import (
 	"testing"
@@ -61,4 +61,10 @@ func TestHourAndMinuteFromString(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPrintWeekData(t *testing.T) {
+	t.Run("It should only give today's data", func(t *testing.T) {
+
+	})
 }
