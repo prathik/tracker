@@ -27,6 +27,8 @@ var graphCmd = &cobra.Command{
 		ss := domain.NewSessionService(bolt)
 		duration, _ := time.ParseDuration("168h") // 7 days
 		queryData, err := ss.ReportForPreviousDays(duration)
+		domain.SortDays(queryData)
+		
 		if err != nil {
 			color.Red("error: %s", err)
 			return

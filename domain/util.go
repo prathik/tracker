@@ -21,11 +21,7 @@ func PrintWeekData(sessionService *SessionService) ([][]string, error) {
 	duration, _ := time.ParseDuration("168h") // 7 days
 	queryData, err := sessionService.ReportForPreviousDays(duration)
 
-	sort.Slice(queryData, func(i, j int) bool {
-		a, _ := time.Parse("2006-01-02", queryData[i].Day)
-		b, _ := time.Parse("2006-01-02", queryData[j].Day)
-		return a.After(b)
-	})
+	SortDays(queryData)
 
 	if err != nil {
 		return nil, err
@@ -45,8 +41,16 @@ func PrintWeekData(sessionService *SessionService) ([][]string, error) {
 		// TODO Convert to current week rolling average
 		color.Green("Average Count = %d", prevDaysAverage)
 	}
-	
+
 	return weekData, nil
+}
+
+func SortDays(queryData Days) {
+	sort.Slice(queryData, func(i, j int) bool {
+		a, _ := time.Parse("2006-01-02", queryData[i].Day)
+		b, _ := time.Parse("2006-01-02", queryData[j].Day)
+		return a.After(b)
+	})
 }
 
 // PrintByDay prints the data per day with items of each day in a table
