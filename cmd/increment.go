@@ -4,11 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/olekukonko/tablewriter"
 	"github.com/prathik/tracker/domain"
 	"github.com/prathik/tracker/repo"
 	"github.com/spf13/cobra"
-	"os"
 	"time"
 )
 
@@ -31,10 +29,6 @@ var incrementCmd = &cobra.Command{
 
 		startTime, _ := cmd.Flags().GetString("start-time")
 		count, _ := cmd.Flags().GetInt("count")
-
-		const (
-			notesResult = "deprecated"
-		)
 
 		challenge := args[0]
 
@@ -65,11 +59,7 @@ var incrementCmd = &cobra.Command{
 		}
 
 		fmt.Printf("\n")
-		data, _ := domain.PrintWeekData(sessionService)
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Day", "Count"})
-		table.AppendBulk(data)
-		table.Render()
+		PrintWeeklyReport(sessionService)
 	},
 }
 

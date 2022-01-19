@@ -12,37 +12,12 @@ import (
 	"time"
 )
 
-// PrintWeekData prints the data of the entire week in a tabular format
-func PrintWeekData(sessionService *SessionService) ([][]string, error) {
-	var weekData [][]string
-
-	prevCount := 0.0
-	prevTotal := 0.0
-	duration, _ := time.ParseDuration("168h") // 7 days
-	queryData, err := sessionService.ReportForPreviousDays(duration)
-
-	SortDays(queryData)
-
-	if err != nil {
-		return nil, err
+func mod(d, m int) int {
+	var res = d % m
+	if (res < 0 && m > 0) || (res > 0 && m < 0) {
+		return res + m
 	}
-	today := time.Now().Format("2006-01-02")
-	for _, d := range queryData {
-		day := d.Day
-		if today != day {
-			prevCount = prevCount + 1
-			prevTotal = prevTotal + float64(d.Count)
-		}
-		weekData = append(weekData, []string{day, strconv.Itoa(d.Count)})
-	}
-
-	if prevCount != 0 {
-		prevDaysAverage := int(prevTotal / prevCount)
-		// TODO Convert to current week rolling average
-		color.Green("Average Count = %d", prevDaysAverage)
-	}
-
-	return weekData, nil
+	return res
 }
 
 func SortDays(queryData Days) {
@@ -87,7 +62,6 @@ func PrintWithTime(ss *SessionService, since time.Duration) {
 			printData := []string{wi.Time.Format(time.RFC3339), formatDelta(now, wi.Time), strconv.Itoa(Score(wi.Challenge))}
 			table.Rich(printData, []tablewriter.Colors{{}, {}, getColour(Score(wi.Challenge))})
 		}
-
 	}
 	table.Render()
 }

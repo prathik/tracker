@@ -6,6 +6,7 @@ import (
 	"github.com/prathik/tracker/domain"
 	"github.com/prathik/tracker/repo"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -28,13 +29,19 @@ to quickly create a Cobra application.`,
 			return
 		}
 		defer bolt.Close()
-		ss := domain.NewSessionService(bolt)
-		data, _ := domain.PrintWeekData(ss)
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Day", "Count"})
-		table.AppendBulk(data)
-		table.Render()
+		sessionService := domain.NewSessionService(bolt)
+		PrintWeeklyReport(sessionService)
 	},
+}
+
+func PrintWeeklyReport(sessionService *domain.SessionService) {
+	data, _ := domain.GenerateWeekReport(time.Now(), sessionService)
+	color.Green("Average Count = %.2f", data.AverageCount)
+	color.Green("Flow Ratio = %.2f", data.FlowRatio)
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Day", "Count"})
+	table.AppendBulk(data.Raw)
+	table.Render()
 }
 
 func init() {
